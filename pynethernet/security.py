@@ -1,17 +1,7 @@
-import os
 import hashlib
 import hmac
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
-from dotenv import load_dotenv
-
-load_dotenv()
-
-AES_KEY = os.getenv('AES_KEY')
-if not AES_KEY:
-    raise ValueError("Missing AES_KEY environment variable")
-
-AES_KEY = AES_KEY.encode() if isinstance(AES_KEY, str) else AES_KEY
 
 
 def generate_hmac(data: bytes, key: bytes) -> str:

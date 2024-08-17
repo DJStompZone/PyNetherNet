@@ -1,7 +1,10 @@
 import asyncio
 import logging
-from .websocket_client import WebSocketClient
-from .config import SESSION_ID, MCTOKEN
+from .config import load_config
+from .websocket_client import connect_to_xbox_live
+from .webrtc_handler import negotiate_webrtc_connection, exchange_ice_candidates
+
+SESSION_ID, MCTOKEN, _ = load_config()
 
 
 def main():
@@ -12,14 +15,22 @@ def main():
 
     async def run_client():
         """
-        Asynchronous function to create, connect, and close the WebSocket client.
+        Asynchronous function to create, connect, and manage WebRTC connection.
 
-        Creates an instance of WebSocketClient using SESSION_ID and MCTOKEN,
-        connects to the WebSocket server, and then closes the connection.
+        Connects to the Xbox Live WebSocket server, negotiates the WebRTC connection,
+        and handles ICE candidates exchange.
         """
-        client = WebSocketClient(SESSION_ID, MCTOKEN)
-        await client.connect()
-        await client.close()
+        websocket, connection_info = await connect_to_xbox_live(SESSION_ID, MCTOKEN)
+
+        # Set up WebRTC connection
+        peer_connection = await negotiate_webrtc_connection(websocket)
+
+        # Exchange ICE candidates
+        await exchange_ice_candidates(peer_connection, websocket)
+
+        # Close the WebSocket connection after the WebRTC setup
+        await websocket.close()
+        await peer_connection.close()
 
     asyncio.run(run_client())
 

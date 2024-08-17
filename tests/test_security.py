@@ -17,7 +17,7 @@ def test_verify_hmac():
 
 def test_encrypt_decrypt_data():
     data = b"test data"
-    key = b"thisisaverysecretkey12345678"  # 32 bytes key for AES-256
+    key = b"thisisaverysecretkeyits32bytes!!"
     encrypted_data = encrypt_data(data, key)
     decrypted_data = decrypt_data(encrypted_data, key)
     assert decrypted_data == data

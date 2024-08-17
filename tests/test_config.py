@@ -1,7 +1,17 @@
-from pynethernet.config import SESSION_ID, MCTOKEN, AES_KEY
+import pytest
+from pynethernet.config import load_config
 
 
-def test_env_variables():
-    assert SESSION_ID is not None, "SESSION_ID is not set"
-    assert MCTOKEN is not None, "MCTOKEN is not set"
-    assert AES_KEY is not None, "AES_KEY is not set"
+@pytest.fixture(autouse=True)
+def mock_env_vars(monkeypatch):
+    monkeypatch.setenv("SESSION_ID", "test_session_id")
+    monkeypatch.setenv("MCTOKEN", "test_mctoken")
+    monkeypatch.setenv("AES_KEY", "test_aes_key")
+
+
+def test_env_variables(mock_env_vars):
+    SESSION_ID, MCTOKEN, AES_KEY = load_config()
+    assert SESSION_ID == "test_session_id"
+    assert MCTOKEN == "test_mctoken"
+    assert AES_KEY == "test_aes_key"
+
