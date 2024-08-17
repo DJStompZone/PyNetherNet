@@ -11,6 +11,10 @@
 - Generate and verify HMACs
 - Interact with the PlayFab API
 
+## Requirements
+
+- Python 3.12 or higher
+
 ## Installation
 
 You can install `pynethernet` via `pip`:
